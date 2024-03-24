@@ -1485,3 +1485,1076 @@ Processing by AddDiaryController#index as HTML
 Completed 200 OK in 7ms (Views: 6.8ms | Allocations: 6621)
 
 
+  [1m[35m (1.5ms)[0m  [1m[35mCREATE TABLE "schema_migrations" ("version" varchar NOT NULL PRIMARY KEY)[0m
+  [1m[35m (0.6ms)[0m  [1m[35mCREATE TABLE "ar_internal_metadata" ("key" varchar NOT NULL PRIMARY KEY, "value" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[36mActiveRecord::SchemaMigration Pluck (0.1ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Migrating to CreateDiaries (20240324075034)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.2ms)[0m  [1m[35mCREATE TABLE "diaries" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "diary_title" varchar(75) NOT NULL, "diary_desc" text NOT NULL, "diary_date" date NOT NULL, "diary_mood" integer(2) NOT NULL, "diary_tired" integer(2) NOT NULL, "created_by" varchar(36) NOT NULL, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.2ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES (?)[0m  [["version", "20240324075034"]]
+  [1m[36mTRANSACTION (0.6ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.1ms)[0m  [1m[34mSELECT "ar_internal_metadata".* FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? LIMIT ?[0m  [["key", "environment"], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mActiveRecord::InternalMetadata Create (0.3ms)[0m  [1m[32mINSERT INTO "ar_internal_metadata" ("key", "value", "created_at", "updated_at") VALUES (?, ?, ?, ?)[0m  [["key", "environment"], ["value", "development"], ["created_at", "2024-03-24 08:04:28.794066"], ["updated_at", "2024-03-24 08:04:28.794066"]]
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mActiveRecord::SchemaMigration Pluck (0.1ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[36mDiary Load (0.1ms)[0m  [1m[34mSELECT "diaries".* FROM "diaries"[0m
+Started GET "/add" for 127.0.0.1 at 2024-03-24 15:12:19 +0700
+  [1m[36mActiveRecord::SchemaMigration Pluck (0.1ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Processing by AddDiaryController#index as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering add_diary/index.html.erb within layouts/application
+  Rendered add_diary/index.html.erb within layouts/application (Duration: 0.7ms | Allocations: 639)
+  Rendered layout layouts/application.html.erb (Duration: 63.9ms | Allocations: 43829)
+Completed 200 OK in 71ms (Views: 65.7ms | ActiveRecord: 0.0ms | Allocations: 51020)
+
+
+Started GET "/add" for 127.0.0.1 at 2024-03-24 16:05:57 +0700
+Processing by AddDiaryController#index as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering add_diary/index.html.erb within layouts/application
+  Rendered add_diary/index.html.erb within layouts/application (Duration: 1.8ms | Allocations: 2113)
+  Rendered layout layouts/application.html.erb (Duration: 1.9ms | Allocations: 2204)
+Completed 500 Internal Server Error in 4ms (Allocations: 3478)
+
+
+  
+ActionView::SyntaxErrorInTemplate (Encountered a syntax error while rendering template: check <style>
+    #rich_box {
+        height: 65vh !important;
+        margin-bottom: var(--spaceSM);
+    }
+</style>
+
+<%= form_with model: @diary do |form| %>
+    <label>Diary Title</label>
+    <input class="form-control mb-2" type="text" name="diary_title" id="diary_title" required/>
+    <%= form.text_field :diary_title, class: 'form-control' %>
+    <%= form.label :title, 'Title' %>
+
+    <label>Description</label>
+    <div id="rich_box"></div>
+    <%= form.text_field :diary_desc, id: 'diary_desc' hidden %>
+
+    <div class="form-group">
+        <%= form.label :diary_date, "Date" %>
+        <%= form.date_field :diary_date, class: "form-control mb-2", id: "diary_date", required: true %>
+    </div>
+
+    <div class="row mb-2">
+        <div class="col-lg-6 col-md-6 col-sm-12">
+            <%= form.label :diary_mood, "How happy your mood this day?" %><br>
+            <%= form.range_field :diary_mood, min: 1, max: 10 %><br>
+            <span>Min (1) and Max (10)</span>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-12">
+            <%= form.label :diary_tired, "How tired your body this day?" %><br>
+            <%= form.range_field :diary_tired, min: 1, max: 10 %><br>
+            <span>Min (1) and Max (10)</span>
+        </div>
+    </div>
+
+    <div class="actions">
+        <%= form.submit "Submit", class: "btn btn-primary" %>
+    </div>
+
+    <%= form.submit 'Post Diary', class: 'btn btn-success w-100 py-3 my-3' %><i class="fa-solid fa-address-book mx-2"></i>
+<%= end %>
+
+<script>
+    var desc = document.getElementById("diary_desc");
+
+    function deleteAfterCharacter(str, character) {
+        var index = str.indexOf(character);
+        if (index !== -1) {
+            return str.slice(0, index);
+        } else {
+            return str;
+        }
+    }
+
+    function getRichText(){
+        var rawText = document.getElementById("rich_box").innerHTML;
+        var cleanText = splitOutRichTag(rawText);
+        var characterToDeleteAfter = "</div>";
+        var modifiedString = deleteAfterCharacter(cleanText, characterToDeleteAfter);
+        desc.value = modifiedString;
+    }
+</script>
+
+<!-- Main Quill library -->
+<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+<script>
+    var quill = new Quill('#rich_box', {
+        theme: 'snow'
+    });
+</script>
+):
+1:    <style>
+2:        #rich_box {
+3:            height: 65vh !important;
+4:            margin-bottom: var(--spaceSM);
+5:        }
+6:    </style>
+7:    
+8:    <%= form_with model: @diary do |form| %>
+9:        <label>Diary Title</label>
+10:        <input class="form-control mb-2" type="text" name="diary_title" id="diary_title" required/>
+11:        <%= form.text_field :diary_title, class: 'form-control' %>
+12:        <%= form.label :title, 'Title' %>
+13:    
+14:        <label>Description</label>
+15:        <div id="rich_box"></div>
+16:        <%= form.text_field :diary_desc, id: 'diary_desc' hidden %>
+17:    
+18:        <div class="form-group">
+19:            <%= form.label :diary_date, "Date" %>
+20:            <%= form.date_field :diary_date, class: "form-control mb-2", id: "diary_date", required: true %>
+21:        </div>
+22:    
+23:        <div class="row mb-2">
+24:            <div class="col-lg-6 col-md-6 col-sm-12">
+25:                <%= form.label :diary_mood, "How happy your mood this day?" %><br>
+26:                <%= form.range_field :diary_mood, min: 1, max: 10 %><br>
+27:                <span>Min (1) and Max (10)</span>
+28:            </div>
+29:            <div class="col-lg-6 col-md-6 col-sm-12">
+30:                <%= form.label :diary_tired, "How tired your body this day?" %><br>
+31:                <%= form.range_field :diary_tired, min: 1, max: 10 %><br>
+32:                <span>Min (1) and Max (10)</span>
+33:            </div>
+34:        </div>
+35:    
+36:        <div class="actions">
+37:            <%= form.submit "Submit", class: "btn btn-primary" %>
+38:        </div>
+39:    
+40:        <%= form.submit 'Post Diary', class: 'btn btn-success w-100 py-3 my-3' %><i class="fa-solid fa-address-book mx-2"></i>
+41:    <%= end %>
+42:    
+43:    <script>
+44:        var desc = document.getElementById("diary_desc");
+45:    
+46:        function deleteAfterCharacter(str, character) {
+47:            var index = str.indexOf(character);
+48:            if (index !== -1) {
+49:                return str.slice(0, index);
+50:            } else {
+51:                return str;
+52:            }
+53:        }
+54:    
+55:        function getRichText(){
+56:            var rawText = document.getElementById("rich_box").innerHTML;
+57:            var cleanText = splitOutRichTag(rawText);
+58:            var characterToDeleteAfter = "</div>";
+59:            var modifiedString = deleteAfterCharacter(cleanText, characterToDeleteAfter);
+60:            desc.value = modifiedString;
+61:        }
+62:    </script>
+63:    
+64:    <!-- Main Quill library -->
+65:    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+66:    <script>
+67:        var quill = new Quill('#rich_box', {
+68:            theme: 'snow'
+69:        });
+70:    </script>
+  
+app/views/add_diary/index.html.erb:16: syntax error, unexpected local variable or method, expecting ')'
+app/views/add_diary/index.html.erb:41: syntax error, unexpected `end'
+app/views/add_diary/index.html.erb:72: syntax error, unexpected `end', expecting ')'
+app/views/add_diary/index.html.erb:16: syntax error, unexpected local variable or method, expecting ')'
+app/views/add_diary/index.html.erb:41: syntax error, unexpected `end'
+app/views/add_diary/index.html.erb:72: syntax error, unexpected `end', expecting ')'
+app/views/add_diary/index.html.erb:16: syntax error, unexpected local variable or method, expecting ')'
+app/views/add_diary/index.html.erb:41: syntax error, unexpected `end'
+app/views/add_diary/index.html.erb:72: syntax error, unexpected `end', expecting ')'
+app/views/add_diary/index.html.erb:16: syntax error, unexpected local variable or method, expecting ')'
+app/views/add_diary/index.html.erb:41: syntax error, unexpected `end'
+app/views/add_diary/index.html.erb:72: syntax error, unexpected `end', expecting ')'
+app/views/add_diary/index.html.erb:16: syntax error, unexpected local variable or method, expecting ')'
+app/views/add_diary/index.html.erb:41: syntax error, unexpected `end'
+app/views/add_diary/index.html.erb:72: syntax error, unexpected `end', expecting ')'
+app/views/add_diary/index.html.erb:16: syntax error, unexpected local variable or method, expecting ')'
+app/views/add_diary/index.html.erb:41: syntax error, unexpected `end'
+app/views/add_diary/index.html.erb:72: syntax error, unexpected `end', expecting ')'
+Started GET "/add" for 127.0.0.1 at 2024-03-24 16:05:59 +0700
+Processing by AddDiaryController#index as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering add_diary/index.html.erb within layouts/application
+  Rendered add_diary/index.html.erb within layouts/application (Duration: 5.0ms | Allocations: 1329)
+  Rendered layout layouts/application.html.erb (Duration: 6.0ms | Allocations: 1402)
+Completed 500 Internal Server Error in 10ms (Allocations: 1721)
+
+
+  
+ActionView::SyntaxErrorInTemplate (Encountered a syntax error while rendering template: check <style>
+    #rich_box {
+        height: 65vh !important;
+        margin-bottom: var(--spaceSM);
+    }
+</style>
+
+<%= form_with model: @diary do |form| %>
+    <label>Diary Title</label>
+    <input class="form-control mb-2" type="text" name="diary_title" id="diary_title" required/>
+    <%= form.text_field :diary_title, class: 'form-control' %>
+    <%= form.label :title, 'Title' %>
+
+    <label>Description</label>
+    <div id="rich_box"></div>
+    <%= form.text_field :diary_desc, id: 'diary_desc' hidden %>
+
+    <div class="form-group">
+        <%= form.label :diary_date, "Date" %>
+        <%= form.date_field :diary_date, class: "form-control mb-2", id: "diary_date", required: true %>
+    </div>
+
+    <div class="row mb-2">
+        <div class="col-lg-6 col-md-6 col-sm-12">
+            <%= form.label :diary_mood, "How happy your mood this day?" %><br>
+            <%= form.range_field :diary_mood, min: 1, max: 10 %><br>
+            <span>Min (1) and Max (10)</span>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-12">
+            <%= form.label :diary_tired, "How tired your body this day?" %><br>
+            <%= form.range_field :diary_tired, min: 1, max: 10 %><br>
+            <span>Min (1) and Max (10)</span>
+        </div>
+    </div>
+
+    <div class="actions">
+        <%= form.submit "Submit", class: "btn btn-primary" %>
+    </div>
+
+    <%= form.submit 'Post Diary', class: 'btn btn-success w-100 py-3 my-3' %><i class="fa-solid fa-address-book mx-2"></i>
+<%= end %>
+
+<script>
+    var desc = document.getElementById("diary_desc");
+
+    function deleteAfterCharacter(str, character) {
+        var index = str.indexOf(character);
+        if (index !== -1) {
+            return str.slice(0, index);
+        } else {
+            return str;
+        }
+    }
+
+    function getRichText(){
+        var rawText = document.getElementById("rich_box").innerHTML;
+        var cleanText = splitOutRichTag(rawText);
+        var characterToDeleteAfter = "</div>";
+        var modifiedString = deleteAfterCharacter(cleanText, characterToDeleteAfter);
+        desc.value = modifiedString;
+    }
+</script>
+
+<!-- Main Quill library -->
+<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+<script>
+    var quill = new Quill('#rich_box', {
+        theme: 'snow'
+    });
+</script>
+):
+1:    <style>
+2:        #rich_box {
+3:            height: 65vh !important;
+4:            margin-bottom: var(--spaceSM);
+5:        }
+6:    </style>
+7:    
+8:    <%= form_with model: @diary do |form| %>
+9:        <label>Diary Title</label>
+10:        <input class="form-control mb-2" type="text" name="diary_title" id="diary_title" required/>
+11:        <%= form.text_field :diary_title, class: 'form-control' %>
+12:        <%= form.label :title, 'Title' %>
+13:    
+14:        <label>Description</label>
+15:        <div id="rich_box"></div>
+16:        <%= form.text_field :diary_desc, id: 'diary_desc' hidden %>
+17:    
+18:        <div class="form-group">
+19:            <%= form.label :diary_date, "Date" %>
+20:            <%= form.date_field :diary_date, class: "form-control mb-2", id: "diary_date", required: true %>
+21:        </div>
+22:    
+23:        <div class="row mb-2">
+24:            <div class="col-lg-6 col-md-6 col-sm-12">
+25:                <%= form.label :diary_mood, "How happy your mood this day?" %><br>
+26:                <%= form.range_field :diary_mood, min: 1, max: 10 %><br>
+27:                <span>Min (1) and Max (10)</span>
+28:            </div>
+29:            <div class="col-lg-6 col-md-6 col-sm-12">
+30:                <%= form.label :diary_tired, "How tired your body this day?" %><br>
+31:                <%= form.range_field :diary_tired, min: 1, max: 10 %><br>
+32:                <span>Min (1) and Max (10)</span>
+33:            </div>
+34:        </div>
+35:    
+36:        <div class="actions">
+37:            <%= form.submit "Submit", class: "btn btn-primary" %>
+38:        </div>
+39:    
+40:        <%= form.submit 'Post Diary', class: 'btn btn-success w-100 py-3 my-3' %><i class="fa-solid fa-address-book mx-2"></i>
+41:    <%= end %>
+42:    
+43:    <script>
+44:        var desc = document.getElementById("diary_desc");
+45:    
+46:        function deleteAfterCharacter(str, character) {
+47:            var index = str.indexOf(character);
+48:            if (index !== -1) {
+49:                return str.slice(0, index);
+50:            } else {
+51:                return str;
+52:            }
+53:        }
+54:    
+55:        function getRichText(){
+56:            var rawText = document.getElementById("rich_box").innerHTML;
+57:            var cleanText = splitOutRichTag(rawText);
+58:            var characterToDeleteAfter = "</div>";
+59:            var modifiedString = deleteAfterCharacter(cleanText, characterToDeleteAfter);
+60:            desc.value = modifiedString;
+61:        }
+62:    </script>
+63:    
+64:    <!-- Main Quill library -->
+65:    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+66:    <script>
+67:        var quill = new Quill('#rich_box', {
+68:            theme: 'snow'
+69:        });
+70:    </script>
+  
+app/views/add_diary/index.html.erb:16: syntax error, unexpected local variable or method, expecting ')'
+app/views/add_diary/index.html.erb:41: syntax error, unexpected `end'
+app/views/add_diary/index.html.erb:72: syntax error, unexpected `end', expecting ')'
+app/views/add_diary/index.html.erb:16: syntax error, unexpected local variable or method, expecting ')'
+app/views/add_diary/index.html.erb:41: syntax error, unexpected `end'
+app/views/add_diary/index.html.erb:72: syntax error, unexpected `end', expecting ')'
+app/views/add_diary/index.html.erb:16: syntax error, unexpected local variable or method, expecting ')'
+app/views/add_diary/index.html.erb:41: syntax error, unexpected `end'
+app/views/add_diary/index.html.erb:72: syntax error, unexpected `end', expecting ')'
+app/views/add_diary/index.html.erb:16: syntax error, unexpected local variable or method, expecting ')'
+app/views/add_diary/index.html.erb:41: syntax error, unexpected `end'
+app/views/add_diary/index.html.erb:72: syntax error, unexpected `end', expecting ')'
+app/views/add_diary/index.html.erb:16: syntax error, unexpected local variable or method, expecting ')'
+app/views/add_diary/index.html.erb:41: syntax error, unexpected `end'
+app/views/add_diary/index.html.erb:72: syntax error, unexpected `end', expecting ')'
+app/views/add_diary/index.html.erb:16: syntax error, unexpected local variable or method, expecting ')'
+app/views/add_diary/index.html.erb:41: syntax error, unexpected `end'
+app/views/add_diary/index.html.erb:72: syntax error, unexpected `end', expecting ')'
+Started GET "/add" for 127.0.0.1 at 2024-03-24 16:06:26 +0700
+Processing by AddDiaryController#index as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering add_diary/index.html.erb within layouts/application
+  Rendered add_diary/index.html.erb within layouts/application (Duration: 0.7ms | Allocations: 1365)
+  Rendered layout layouts/application.html.erb (Duration: 0.8ms | Allocations: 1447)
+Completed 500 Internal Server Error in 3ms (Allocations: 2610)
+
+
+  
+ActionView::SyntaxErrorInTemplate (Encountered a syntax error while rendering template: check <style>
+    #rich_box {
+        height: 65vh !important;
+        margin-bottom: var(--spaceSM);
+    }
+</style>
+
+<%= form_with model: @diary do |form| %>
+    <label>Diary Title</label>
+    <input class="form-control mb-2" type="text" name="diary_title" id="diary_title" required/>
+    <%= form.text_field :diary_title, class: 'form-control' %>
+    <%= form.label :title, 'Title' %>
+
+    <label>Description</label>
+    <div id="rich_box"></div>
+    <%= form.text_field :diary_desc, id: 'diary_desc', hidden: true %>
+
+    <div class="form-group">
+        <%= form.label :diary_date, "Date" %>
+        <%= form.date_field :diary_date, class: "form-control mb-2", id: "diary_date", required: true %>
+    </div>
+
+    <div class="row mb-2">
+        <div class="col-lg-6 col-md-6 col-sm-12">
+            <%= form.label :diary_mood, "How happy your mood this day?" %><br>
+            <%= form.range_field :diary_mood, min: 1, max: 10 %><br>
+            <span>Min (1) and Max (10)</span>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-12">
+            <%= form.label :diary_tired, "How tired your body this day?" %><br>
+            <%= form.range_field :diary_tired, min: 1, max: 10 %><br>
+            <span>Min (1) and Max (10)</span>
+        </div>
+    </div>
+
+    <div class="actions">
+        <%= form.submit "Submit", class: "btn btn-primary" %>
+    </div>
+
+    <%= form.submit 'Post Diary', class: 'btn btn-success w-100 py-3 my-3' %><i class="fa-solid fa-address-book mx-2"></i>
+<%= end %>
+
+<script>
+    var desc = document.getElementById("diary_desc");
+
+    function deleteAfterCharacter(str, character) {
+        var index = str.indexOf(character);
+        if (index !== -1) {
+            return str.slice(0, index);
+        } else {
+            return str;
+        }
+    }
+
+    function getRichText(){
+        var rawText = document.getElementById("rich_box").innerHTML;
+        var cleanText = splitOutRichTag(rawText);
+        var characterToDeleteAfter = "</div>";
+        var modifiedString = deleteAfterCharacter(cleanText, characterToDeleteAfter);
+        desc.value = modifiedString;
+    }
+</script>
+
+<!-- Main Quill library -->
+<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+<script>
+    var quill = new Quill('#rich_box', {
+        theme: 'snow'
+    });
+</script>
+):
+1:    <style>
+2:        #rich_box {
+3:            height: 65vh !important;
+4:            margin-bottom: var(--spaceSM);
+5:        }
+6:    </style>
+7:    
+8:    <%= form_with model: @diary do |form| %>
+9:        <label>Diary Title</label>
+10:        <input class="form-control mb-2" type="text" name="diary_title" id="diary_title" required/>
+11:        <%= form.text_field :diary_title, class: 'form-control' %>
+12:        <%= form.label :title, 'Title' %>
+13:    
+14:        <label>Description</label>
+15:        <div id="rich_box"></div>
+16:        <%= form.text_field :diary_desc, id: 'diary_desc', hidden: true %>
+17:    
+18:        <div class="form-group">
+19:            <%= form.label :diary_date, "Date" %>
+20:            <%= form.date_field :diary_date, class: "form-control mb-2", id: "diary_date", required: true %>
+21:        </div>
+22:    
+23:        <div class="row mb-2">
+24:            <div class="col-lg-6 col-md-6 col-sm-12">
+25:                <%= form.label :diary_mood, "How happy your mood this day?" %><br>
+26:                <%= form.range_field :diary_mood, min: 1, max: 10 %><br>
+27:                <span>Min (1) and Max (10)</span>
+28:            </div>
+29:            <div class="col-lg-6 col-md-6 col-sm-12">
+30:                <%= form.label :diary_tired, "How tired your body this day?" %><br>
+31:                <%= form.range_field :diary_tired, min: 1, max: 10 %><br>
+32:                <span>Min (1) and Max (10)</span>
+33:            </div>
+34:        </div>
+35:    
+36:        <div class="actions">
+37:            <%= form.submit "Submit", class: "btn btn-primary" %>
+38:        </div>
+39:    
+40:        <%= form.submit 'Post Diary', class: 'btn btn-success w-100 py-3 my-3' %><i class="fa-solid fa-address-book mx-2"></i>
+41:    <%= end %>
+42:    
+43:    <script>
+44:        var desc = document.getElementById("diary_desc");
+45:    
+46:        function deleteAfterCharacter(str, character) {
+47:            var index = str.indexOf(character);
+48:            if (index !== -1) {
+49:                return str.slice(0, index);
+50:            } else {
+51:                return str;
+52:            }
+53:        }
+54:    
+55:        function getRichText(){
+56:            var rawText = document.getElementById("rich_box").innerHTML;
+57:            var cleanText = splitOutRichTag(rawText);
+58:            var characterToDeleteAfter = "</div>";
+59:            var modifiedString = deleteAfterCharacter(cleanText, characterToDeleteAfter);
+60:            desc.value = modifiedString;
+61:        }
+62:    </script>
+63:    
+64:    <!-- Main Quill library -->
+65:    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+66:    <script>
+67:        var quill = new Quill('#rich_box', {
+68:            theme: 'snow'
+69:        });
+70:    </script>
+  
+app/views/add_diary/index.html.erb:41: syntax error, unexpected `end'
+app/views/add_diary/index.html.erb:72: syntax error, unexpected `end', expecting ')'
+app/views/add_diary/index.html.erb:41: syntax error, unexpected `end'
+app/views/add_diary/index.html.erb:72: syntax error, unexpected `end', expecting ')'
+app/views/add_diary/index.html.erb:41: syntax error, unexpected `end'
+app/views/add_diary/index.html.erb:72: syntax error, unexpected `end', expecting ')'
+app/views/add_diary/index.html.erb:41: syntax error, unexpected `end'
+app/views/add_diary/index.html.erb:72: syntax error, unexpected `end', expecting ')'
+app/views/add_diary/index.html.erb:41: syntax error, unexpected `end'
+app/views/add_diary/index.html.erb:72: syntax error, unexpected `end', expecting ')'
+app/views/add_diary/index.html.erb:41: syntax error, unexpected `end'
+app/views/add_diary/index.html.erb:72: syntax error, unexpected `end', expecting ')'
+Started GET "/add" for 127.0.0.1 at 2024-03-24 16:06:27 +0700
+Processing by AddDiaryController#index as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering add_diary/index.html.erb within layouts/application
+  Rendered add_diary/index.html.erb within layouts/application (Duration: 1.1ms | Allocations: 1325)
+  Rendered layout layouts/application.html.erb (Duration: 1.2ms | Allocations: 1398)
+Completed 500 Internal Server Error in 3ms (Allocations: 1700)
+
+
+  
+ActionView::SyntaxErrorInTemplate (Encountered a syntax error while rendering template: check <style>
+    #rich_box {
+        height: 65vh !important;
+        margin-bottom: var(--spaceSM);
+    }
+</style>
+
+<%= form_with model: @diary do |form| %>
+    <label>Diary Title</label>
+    <input class="form-control mb-2" type="text" name="diary_title" id="diary_title" required/>
+    <%= form.text_field :diary_title, class: 'form-control' %>
+    <%= form.label :title, 'Title' %>
+
+    <label>Description</label>
+    <div id="rich_box"></div>
+    <%= form.text_field :diary_desc, id: 'diary_desc', hidden: true %>
+
+    <div class="form-group">
+        <%= form.label :diary_date, "Date" %>
+        <%= form.date_field :diary_date, class: "form-control mb-2", id: "diary_date", required: true %>
+    </div>
+
+    <div class="row mb-2">
+        <div class="col-lg-6 col-md-6 col-sm-12">
+            <%= form.label :diary_mood, "How happy your mood this day?" %><br>
+            <%= form.range_field :diary_mood, min: 1, max: 10 %><br>
+            <span>Min (1) and Max (10)</span>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-12">
+            <%= form.label :diary_tired, "How tired your body this day?" %><br>
+            <%= form.range_field :diary_tired, min: 1, max: 10 %><br>
+            <span>Min (1) and Max (10)</span>
+        </div>
+    </div>
+
+    <div class="actions">
+        <%= form.submit "Submit", class: "btn btn-primary" %>
+    </div>
+
+    <%= form.submit 'Post Diary', class: 'btn btn-success w-100 py-3 my-3' %><i class="fa-solid fa-address-book mx-2"></i>
+<%= end %>
+
+<script>
+    var desc = document.getElementById("diary_desc");
+
+    function deleteAfterCharacter(str, character) {
+        var index = str.indexOf(character);
+        if (index !== -1) {
+            return str.slice(0, index);
+        } else {
+            return str;
+        }
+    }
+
+    function getRichText(){
+        var rawText = document.getElementById("rich_box").innerHTML;
+        var cleanText = splitOutRichTag(rawText);
+        var characterToDeleteAfter = "</div>";
+        var modifiedString = deleteAfterCharacter(cleanText, characterToDeleteAfter);
+        desc.value = modifiedString;
+    }
+</script>
+
+<!-- Main Quill library -->
+<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+<script>
+    var quill = new Quill('#rich_box', {
+        theme: 'snow'
+    });
+</script>
+):
+1:    <style>
+2:        #rich_box {
+3:            height: 65vh !important;
+4:            margin-bottom: var(--spaceSM);
+5:        }
+6:    </style>
+7:    
+8:    <%= form_with model: @diary do |form| %>
+9:        <label>Diary Title</label>
+10:        <input class="form-control mb-2" type="text" name="diary_title" id="diary_title" required/>
+11:        <%= form.text_field :diary_title, class: 'form-control' %>
+12:        <%= form.label :title, 'Title' %>
+13:    
+14:        <label>Description</label>
+15:        <div id="rich_box"></div>
+16:        <%= form.text_field :diary_desc, id: 'diary_desc', hidden: true %>
+17:    
+18:        <div class="form-group">
+19:            <%= form.label :diary_date, "Date" %>
+20:            <%= form.date_field :diary_date, class: "form-control mb-2", id: "diary_date", required: true %>
+21:        </div>
+22:    
+23:        <div class="row mb-2">
+24:            <div class="col-lg-6 col-md-6 col-sm-12">
+25:                <%= form.label :diary_mood, "How happy your mood this day?" %><br>
+26:                <%= form.range_field :diary_mood, min: 1, max: 10 %><br>
+27:                <span>Min (1) and Max (10)</span>
+28:            </div>
+29:            <div class="col-lg-6 col-md-6 col-sm-12">
+30:                <%= form.label :diary_tired, "How tired your body this day?" %><br>
+31:                <%= form.range_field :diary_tired, min: 1, max: 10 %><br>
+32:                <span>Min (1) and Max (10)</span>
+33:            </div>
+34:        </div>
+35:    
+36:        <div class="actions">
+37:            <%= form.submit "Submit", class: "btn btn-primary" %>
+38:        </div>
+39:    
+40:        <%= form.submit 'Post Diary', class: 'btn btn-success w-100 py-3 my-3' %><i class="fa-solid fa-address-book mx-2"></i>
+41:    <%= end %>
+42:    
+43:    <script>
+44:        var desc = document.getElementById("diary_desc");
+45:    
+46:        function deleteAfterCharacter(str, character) {
+47:            var index = str.indexOf(character);
+48:            if (index !== -1) {
+49:                return str.slice(0, index);
+50:            } else {
+51:                return str;
+52:            }
+53:        }
+54:    
+55:        function getRichText(){
+56:            var rawText = document.getElementById("rich_box").innerHTML;
+57:            var cleanText = splitOutRichTag(rawText);
+58:            var characterToDeleteAfter = "</div>";
+59:            var modifiedString = deleteAfterCharacter(cleanText, characterToDeleteAfter);
+60:            desc.value = modifiedString;
+61:        }
+62:    </script>
+63:    
+64:    <!-- Main Quill library -->
+65:    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+66:    <script>
+67:        var quill = new Quill('#rich_box', {
+68:            theme: 'snow'
+69:        });
+70:    </script>
+  
+app/views/add_diary/index.html.erb:41: syntax error, unexpected `end'
+app/views/add_diary/index.html.erb:72: syntax error, unexpected `end', expecting ')'
+app/views/add_diary/index.html.erb:41: syntax error, unexpected `end'
+app/views/add_diary/index.html.erb:72: syntax error, unexpected `end', expecting ')'
+app/views/add_diary/index.html.erb:41: syntax error, unexpected `end'
+app/views/add_diary/index.html.erb:72: syntax error, unexpected `end', expecting ')'
+app/views/add_diary/index.html.erb:41: syntax error, unexpected `end'
+app/views/add_diary/index.html.erb:72: syntax error, unexpected `end', expecting ')'
+app/views/add_diary/index.html.erb:41: syntax error, unexpected `end'
+app/views/add_diary/index.html.erb:72: syntax error, unexpected `end', expecting ')'
+app/views/add_diary/index.html.erb:41: syntax error, unexpected `end'
+app/views/add_diary/index.html.erb:72: syntax error, unexpected `end', expecting ')'
+Started GET "/add" for 127.0.0.1 at 2024-03-24 16:08:02 +0700
+Processing by AddDiaryController#index as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering add_diary/index.html.erb within layouts/application
+  Rendered add_diary/index.html.erb within layouts/application (Duration: 15.4ms | Allocations: 9993)
+  Rendered layout layouts/application.html.erb (Duration: 28.5ms | Allocations: 24409)
+Completed 200 OK in 32ms (Views: 30.7ms | Allocations: 25599)
+
+
+Started GET "/add" for 127.0.0.1 at 2024-03-24 16:08:39 +0700
+Processing by AddDiaryController#index as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering add_diary/index.html.erb within layouts/application
+  Rendered add_diary/index.html.erb within layouts/application (Duration: 2.9ms | Allocations: 4906)
+  Rendered layout layouts/application.html.erb (Duration: 6.7ms | Allocations: 7712)
+Completed 200 OK in 12ms (Views: 9.6ms | Allocations: 8953)
+
+
+Started GET "/add" for 127.0.0.1 at 2024-03-24 16:26:36 +0700
+Processing by AddDiaryController#index as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering add_diary/index.html.erb within layouts/application
+  Rendered add_diary/index.html.erb within layouts/application (Duration: 3.5ms | Allocations: 4211)
+  Rendered layout layouts/application.html.erb (Duration: 8.5ms | Allocations: 6426)
+Completed 200 OK in 10ms (Views: 9.2ms | Allocations: 6753)
+
+
+Started GET "/add" for 127.0.0.1 at 2024-03-24 16:27:49 +0700
+Processing by AddDiaryController#index as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering add_diary/index.html.erb within layouts/application
+  Rendered add_diary/index.html.erb within layouts/application (Duration: 2.7ms | Allocations: 4197)
+  Rendered layout layouts/application.html.erb (Duration: 7.0ms | Allocations: 6412)
+Completed 200 OK in 8ms (Views: 7.6ms | Allocations: 6723)
+
+
+Started GET "/add" for 127.0.0.1 at 2024-03-24 16:32:15 +0700
+Processing by AddDiaryController#index as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering add_diary/index.html.erb within layouts/application
+  Rendered add_diary/index.html.erb within layouts/application (Duration: 7.0ms | Allocations: 4919)
+  Rendered layout layouts/application.html.erb (Duration: 10.8ms | Allocations: 7725)
+Completed 200 OK in 17ms (Views: 14.6ms | Allocations: 8923)
+
+
+Started POST "/add" for 127.0.0.1 at 2024-03-24 16:32:38 +0700
+Processing by AddDiaryController#create_diary as TURBO_STREAM
+  Parameters: {"authenticity_token"=>"[FILTERED]", "diary_title"=>"asdads", "diary_desc"=>"", "diary_date"=>"2024-03-22", "diary_mood"=>"10", "diary_tired"=>"10", "commit"=>"Post Diary"}
+Completed 500 Internal Server Error in 18ms (Allocations: 3206)
+
+
+  
+NoMethodError (undefined method `convert_title_format' for #<AddDiaryController:0x0000000000f898>):
+  
+app/controllers/add_diary_controller.rb:8:in `create_diary'
+Started GET "/" for 127.0.0.1 at 2024-03-24 16:35:04 +0700
+Processing by Rails::WelcomeController#index as HTML
+  Rendering /Users/leonardhorsitanggang/.rbenv/versions/3.0.2/lib/ruby/gems/3.0.0/gems/railties-7.0.6/lib/rails/templates/rails/welcome/index.html.erb
+  Rendered /Users/leonardhorsitanggang/.rbenv/versions/3.0.2/lib/ruby/gems/3.0.0/gems/railties-7.0.6/lib/rails/templates/rails/welcome/index.html.erb (Duration: 0.7ms | Allocations: 494)
+Completed 200 OK in 2ms (Views: 1.3ms | Allocations: 1577)
+
+
+Started GET "/add" for 127.0.0.1 at 2024-03-24 16:35:06 +0700
+Processing by AddDiaryController#index as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering add_diary/index.html.erb within layouts/application
+  Rendered add_diary/index.html.erb within layouts/application (Duration: 3.7ms | Allocations: 5226)
+  Rendered layout layouts/application.html.erb (Duration: 18.7ms | Allocations: 19593)
+Completed 200 OK in 22ms (Views: 20.6ms | Allocations: 20885)
+
+
+Started POST "/add" for 127.0.0.1 at 2024-03-24 16:35:23 +0700
+Processing by AddDiaryController#create_diary as TURBO_STREAM
+  Parameters: {"authenticity_token"=>"[FILTERED]", "diary_title"=>"testing", "diary_desc"=>"", "diary_date"=>"2024-03-24", "diary_mood"=>"6", "diary_tired"=>"6", "commit"=>"Post Diary"}
+Completed 500 Internal Server Error in 13ms (Allocations: 3380)
+
+
+  
+NameError (undefined local variable or method `helper' for #<AddDiaryController:0x00000000013560>
+Did you mean?  helpers
+               _helpers):
+  
+app/controllers/add_diary_controller.rb:8:in `create_diary'
+Started GET "/add" for 127.0.0.1 at 2024-03-24 16:36:54 +0700
+  
+NameError (uninitialized constant AddDiaryController::StringHelper):
+  
+app/controllers/add_diary_controller.rb:3:in `<class:AddDiaryController>'
+app/controllers/add_diary_controller.rb:2:in `<main>'
+Started GET "/add" for 127.0.0.1 at 2024-03-24 16:37:03 +0700
+Processing by AddDiaryController#index as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering add_diary/index.html.erb within layouts/application
+  Rendered add_diary/index.html.erb within layouts/application (Duration: 2.8ms | Allocations: 4720)
+  Rendered layout layouts/application.html.erb (Duration: 13.7ms | Allocations: 18592)
+Completed 200 OK in 15ms (Views: 14.7ms | Allocations: 19449)
+
+
+  [1m[36mDiary Load (2.7ms)[0m  [1m[34mSELECT "diaries".* FROM "diaries"[0m
+  [1m[36mDiary Load (0.3ms)[0m  [1m[34mSELECT "diaries".* FROM "diaries"[0m
+  [1m[36mDiary Count (2.5ms)[0m  [1m[34mSELECT COUNT(*) FROM "diaries"[0m
+Started POST "/add" for 127.0.0.1 at 2024-03-24 16:58:02 +0700
+Processing by AddDiaryController#create_diary as TURBO_STREAM
+  Parameters: {"authenticity_token"=>"[FILTERED]", "diary_title"=>"asdasdad", "diary_desc"=>"", "diary_date"=>"2024-03-25", "diary_mood"=>"6", "diary_tired"=>"6", "commit"=>"Post Diary"}
+Completed 500 Internal Server Error in 9ms (Allocations: 3352)
+
+
+  
+NameError (undefined local variable or method `helper' for #<AddDiaryController:0x0000000001ac48>
+Did you mean?  helpers
+               _helpers):
+  
+app/controllers/add_diary_controller.rb:11:in `create_diary'
+Started GET "/add" for 127.0.0.1 at 2024-03-24 16:58:54 +0700
+Processing by AddDiaryController#index as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering add_diary/index.html.erb within layouts/application
+  Rendered add_diary/index.html.erb within layouts/application (Duration: 2.2ms | Allocations: 4723)
+  Rendered layout layouts/application.html.erb (Duration: 11.6ms | Allocations: 18694)
+Completed 200 OK in 13ms (Views: 12.7ms | Allocations: 19552)
+
+
+  [1m[36mDiary Count (0.3ms)[0m  [1m[34mSELECT COUNT(*) FROM "diaries"[0m
+  [1m[36mDiary Count (0.3ms)[0m  [1m[34mSELECT COUNT(*) FROM "diaries"[0m
+Started POST "/add" for 127.0.0.1 at 2024-03-24 16:59:10 +0700
+Processing by AddDiaryController#create_diary as TURBO_STREAM
+  Parameters: {"authenticity_token"=>"[FILTERED]", "diary_title"=>"dasdasd", "diary_desc"=>"", "diary_date"=>"2024-03-24", "diary_mood"=>"6", "diary_tired"=>"6", "commit"=>"Post Diary"}
+  [1m[36mDiary Load (0.2ms)[0m  [1m[34mSELECT "diaries".* FROM "diaries" WHERE "diaries"."diary_date" = ?[0m  [["diary_date", "2024-03-24"]]
+  ↳ app/controllers/add_diary_controller.rb:17:in `create_diary'
+Completed 500 Internal Server Error in 33ms (ActiveRecord: 1.7ms | Allocations: 24550)
+
+
+  
+ActionView::MissingTemplate (Missing template add_diary/new, application/new with {:locale=>[:en], :formats=>[:turbo_stream, :html], :variants=>[], :handlers=>[:raw, :erb, :html, :builder, :ruby, :jbuilder]}.
+
+Searched in:
+  * "/Users/leonardhorsitanggang/Documents/GitHub/myary-ruby/app/views"
+  * "/Users/leonardhorsitanggang/.rbenv/versions/3.0.2/lib/ruby/gems/3.0.0/gems/turbo-rails-1.4.0/app/views"
+  * "/Users/leonardhorsitanggang/.rbenv/versions/3.0.2/lib/ruby/gems/3.0.0/gems/actiontext-7.0.6/app/views"
+  * "/Users/leonardhorsitanggang/.rbenv/versions/3.0.2/lib/ruby/gems/3.0.0/gems/actionmailbox-7.0.6/app/views"
+
+Did you mean?  rails/conductor/action_mailbox/inbound_emails/new
+               rails/conductor/action_mailbox/inbound_emails/sources/new
+               add_diary/index
+               rails/conductor/action_mailbox/inbound_emails/show
+               rails/conductor/action_mailbox/inbound_emails/index
+               layouts/rails/conductor):
+  
+app/controllers/add_diary_controller.rb:39:in `create_diary'
+Started GET "/" for 127.0.0.1 at 2024-03-24 17:00:11 +0700
+Processing by Rails::WelcomeController#index as HTML
+  Rendering /Users/leonardhorsitanggang/.rbenv/versions/3.0.2/lib/ruby/gems/3.0.0/gems/railties-7.0.6/lib/rails/templates/rails/welcome/index.html.erb
+  Rendered /Users/leonardhorsitanggang/.rbenv/versions/3.0.2/lib/ruby/gems/3.0.0/gems/railties-7.0.6/lib/rails/templates/rails/welcome/index.html.erb (Duration: 1.2ms | Allocations: 488)
+Completed 200 OK in 3ms (Views: 2.0ms | ActiveRecord: 0.0ms | Allocations: 1496)
+
+
+Started GET "/" for 127.0.0.1 at 2024-03-24 17:00:12 +0700
+Processing by Rails::WelcomeController#index as HTML
+  Rendering /Users/leonardhorsitanggang/.rbenv/versions/3.0.2/lib/ruby/gems/3.0.0/gems/railties-7.0.6/lib/rails/templates/rails/welcome/index.html.erb
+  Rendered /Users/leonardhorsitanggang/.rbenv/versions/3.0.2/lib/ruby/gems/3.0.0/gems/railties-7.0.6/lib/rails/templates/rails/welcome/index.html.erb (Duration: 0.0ms | Allocations: 15)
+Completed 200 OK in 1ms (Views: 0.4ms | ActiveRecord: 0.0ms | Allocations: 300)
+
+
+Started GET "/add" for 127.0.0.1 at 2024-03-24 17:00:14 +0700
+Processing by AddDiaryController#index as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering add_diary/index.html.erb within layouts/application
+  Rendered add_diary/index.html.erb within layouts/application (Duration: 10.7ms | Allocations: 4826)
+  Rendered layout layouts/application.html.erb (Duration: 14.9ms | Allocations: 7650)
+Completed 200 OK in 17ms (Views: 16.5ms | ActiveRecord: 0.0ms | Allocations: 8810)
+
+
+Started POST "/add" for 127.0.0.1 at 2024-03-24 17:00:21 +0700
+Processing by AddDiaryController#create_diary as TURBO_STREAM
+  Parameters: {"authenticity_token"=>"[FILTERED]", "diary_title"=>"asdasd", "diary_desc"=>"", "diary_date"=>"2024-03-24", "diary_mood"=>"8", "diary_tired"=>"9", "commit"=>"Post Diary"}
+  [1m[36mDiary Load (0.2ms)[0m  [1m[34mSELECT "diaries".* FROM "diaries" WHERE "diaries"."diary_date" = ?[0m  [["diary_date", "2024-03-24"]]
+  ↳ app/controllers/add_diary_controller.rb:17:in `create_diary'
+Completed 500 Internal Server Error in 15ms (ActiveRecord: 0.2ms | Allocations: 3521)
+
+
+  
+ActionView::MissingTemplate (Missing template add_diary/new, application/new with {:locale=>[:en], :formats=>[:turbo_stream, :html], :variants=>[], :handlers=>[:raw, :erb, :html, :builder, :ruby, :jbuilder]}.
+
+Searched in:
+  * "/Users/leonardhorsitanggang/Documents/GitHub/myary-ruby/app/views"
+  * "/Users/leonardhorsitanggang/.rbenv/versions/3.0.2/lib/ruby/gems/3.0.0/gems/turbo-rails-1.4.0/app/views"
+  * "/Users/leonardhorsitanggang/.rbenv/versions/3.0.2/lib/ruby/gems/3.0.0/gems/actiontext-7.0.6/app/views"
+  * "/Users/leonardhorsitanggang/.rbenv/versions/3.0.2/lib/ruby/gems/3.0.0/gems/actionmailbox-7.0.6/app/views"
+
+Did you mean?  rails/conductor/action_mailbox/inbound_emails/new
+               rails/conductor/action_mailbox/inbound_emails/sources/new
+               add_diary/index
+               rails/conductor/action_mailbox/inbound_emails/show
+               rails/conductor/action_mailbox/inbound_emails/index
+               layouts/rails/conductor):
+  
+app/controllers/add_diary_controller.rb:39:in `create_diary'
+Started GET "/add" for 127.0.0.1 at 2024-03-24 17:18:29 +0700
+Processing by AddDiaryController#index as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering add_diary/index.html.erb within layouts/application
+  Rendered add_diary/index.html.erb within layouts/application (Duration: 4.5ms | Allocations: 4918)
+  Rendered layout layouts/application.html.erb (Duration: 9.3ms | Allocations: 7739)
+Completed 200 OK in 14ms (Views: 12.2ms | Allocations: 8929)
+
+
+Started POST "/add" for 127.0.0.1 at 2024-03-24 17:18:36 +0700
+Processing by AddDiaryController#create_diary as TURBO_STREAM
+  Parameters: {"authenticity_token"=>"[FILTERED]", "diary_title"=>"asdas", "diary_desc"=>"", "diary_date"=>"2024-03-24", "diary_mood"=>"6", "diary_tired"=>"6", "commit"=>"Post Diary"}
+  [1m[36mDiary Load (0.1ms)[0m  [1m[34mSELECT "diaries".* FROM "diaries" WHERE "diaries"."diary_date" = ?[0m  [["diary_date", "2024-03-24"]]
+  ↳ app/controllers/add_diary_controller.rb:17:in `create_diary'
+Completed 500 Internal Server Error in 13ms (ActiveRecord: 0.5ms | Allocations: 3696)
+
+
+  
+ActionView::MissingTemplate (Missing template add_diary/new, application/new with {:locale=>[:en], :formats=>[:turbo_stream, :html], :variants=>[], :handlers=>[:raw, :erb, :html, :builder, :ruby, :jbuilder]}.
+
+Searched in:
+  * "/Users/leonardhorsitanggang/Documents/GitHub/myary-ruby/app/views"
+  * "/Users/leonardhorsitanggang/.rbenv/versions/3.0.2/lib/ruby/gems/3.0.0/gems/turbo-rails-1.4.0/app/views"
+  * "/Users/leonardhorsitanggang/.rbenv/versions/3.0.2/lib/ruby/gems/3.0.0/gems/actiontext-7.0.6/app/views"
+  * "/Users/leonardhorsitanggang/.rbenv/versions/3.0.2/lib/ruby/gems/3.0.0/gems/actionmailbox-7.0.6/app/views"
+
+Did you mean?  rails/conductor/action_mailbox/inbound_emails/new
+               rails/conductor/action_mailbox/inbound_emails/sources/new
+               add_diary/index
+               rails/conductor/action_mailbox/inbound_emails/show
+               rails/conductor/action_mailbox/inbound_emails/index
+               layouts/rails/conductor):
+  
+app/controllers/add_diary_controller.rb:39:in `create_diary'
+Started GET "/add" for 127.0.0.1 at 2024-03-24 17:20:07 +0700
+Processing by AddDiaryController#index as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering add_diary/index.html.erb within layouts/application
+  Rendered add_diary/index.html.erb within layouts/application (Duration: 2.6ms | Allocations: 4913)
+  Rendered layout layouts/application.html.erb (Duration: 6.2ms | Allocations: 7734)
+Completed 200 OK in 10ms (Views: 8.7ms | ActiveRecord: 0.0ms | Allocations: 8933)
+
+
+  [1m[36mDiary Count (0.8ms)[0m  [1m[34mSELECT COUNT(*) FROM "diaries"[0m
+Started POST "/add" for 127.0.0.1 at 2024-03-24 17:20:23 +0700
+Processing by AddDiaryController#create_diary as TURBO_STREAM
+  Parameters: {"authenticity_token"=>"[FILTERED]", "diary_title"=>"asdasd", "diary_desc"=>"", "diary_date"=>"2024-03-24", "diary_mood"=>"6", "diary_tired"=>"6", "commit"=>"Post Diary"}
+  [1m[36mDiary Load (0.2ms)[0m  [1m[34mSELECT "diaries".* FROM "diaries" WHERE "diaries"."diary_date" = ?[0m  [["diary_date", "2024-03-24"]]
+  ↳ app/controllers/add_diary_controller.rb:17:in `create_diary'
+Completed 500 Internal Server Error in 8ms (ActiveRecord: 0.2ms | Allocations: 3509)
+
+
+  
+ActionView::MissingTemplate (Missing template add_diary/new, application/new with {:locale=>[:en], :formats=>[:turbo_stream, :html], :variants=>[], :handlers=>[:raw, :erb, :html, :builder, :ruby, :jbuilder]}.
+
+Searched in:
+  * "/Users/leonardhorsitanggang/Documents/GitHub/myary-ruby/app/views"
+  * "/Users/leonardhorsitanggang/.rbenv/versions/3.0.2/lib/ruby/gems/3.0.0/gems/turbo-rails-1.4.0/app/views"
+  * "/Users/leonardhorsitanggang/.rbenv/versions/3.0.2/lib/ruby/gems/3.0.0/gems/actiontext-7.0.6/app/views"
+  * "/Users/leonardhorsitanggang/.rbenv/versions/3.0.2/lib/ruby/gems/3.0.0/gems/actionmailbox-7.0.6/app/views"
+
+Did you mean?  rails/conductor/action_mailbox/inbound_emails/new
+               rails/conductor/action_mailbox/inbound_emails/sources/new
+               add_diary/index
+               rails/conductor/action_mailbox/inbound_emails/show
+               rails/conductor/action_mailbox/inbound_emails/index
+               layouts/rails/conductor):
+  
+app/controllers/add_diary_controller.rb:39:in `create_diary'
+Started GET "/add" for 127.0.0.1 at 2024-03-24 17:21:27 +0700
+Processing by AddDiaryController#index as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering add_diary/index.html.erb within layouts/application
+  Rendered add_diary/index.html.erb within layouts/application (Duration: 3.4ms | Allocations: 4928)
+  Rendered layout layouts/application.html.erb (Duration: 9.5ms | Allocations: 7749)
+Completed 200 OK in 13ms (Views: 11.8ms | ActiveRecord: 0.0ms | Allocations: 8948)
+
+
+Started GET "/add" for 127.0.0.1 at 2024-03-24 17:26:12 +0700
+Processing by AddDiaryController#index as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering add_diary/index.html.erb within layouts/application
+  Rendered add_diary/index.html.erb within layouts/application (Duration: 4.1ms | Allocations: 4824)
+  Rendered layout layouts/application.html.erb (Duration: 8.8ms | Allocations: 7631)
+Completed 200 OK in 15ms (Views: 12.9ms | Allocations: 8845)
+
+
+Started POST "/add" for 127.0.0.1 at 2024-03-24 17:26:20 +0700
+Processing by AddDiaryController#create_diary as TURBO_STREAM
+  Parameters: {"authenticity_token"=>"[FILTERED]", "diary_title"=>"asdasd", "diary_desc"=>"", "diary_date"=>"2024-03-24", "diary_mood"=>"6", "diary_tired"=>"6"}
+  [1m[36mDiary Load (0.2ms)[0m  [1m[34mSELECT "diaries".* FROM "diaries" WHERE "diaries"."diary_date" = ?[0m  [["diary_date", "2024-03-24"]]
+  ↳ app/controllers/add_diary_controller.rb:17:in `create_diary'
+Completed 500 Internal Server Error in 16ms (ActiveRecord: 1.0ms | Allocations: 3696)
+
+
+  
+ActionView::MissingTemplate (Missing template add_diary/new, application/new with {:locale=>[:en], :formats=>[:turbo_stream, :html], :variants=>[], :handlers=>[:raw, :erb, :html, :builder, :ruby, :jbuilder]}.
+
+Searched in:
+  * "/Users/leonardhorsitanggang/Documents/GitHub/myary-ruby/app/views"
+  * "/Users/leonardhorsitanggang/.rbenv/versions/3.0.2/lib/ruby/gems/3.0.0/gems/turbo-rails-1.4.0/app/views"
+  * "/Users/leonardhorsitanggang/.rbenv/versions/3.0.2/lib/ruby/gems/3.0.0/gems/actiontext-7.0.6/app/views"
+  * "/Users/leonardhorsitanggang/.rbenv/versions/3.0.2/lib/ruby/gems/3.0.0/gems/actionmailbox-7.0.6/app/views"
+
+Did you mean?  rails/conductor/action_mailbox/inbound_emails/new
+               rails/conductor/action_mailbox/inbound_emails/sources/new
+               add_diary/index
+               rails/conductor/action_mailbox/inbound_emails/show
+               rails/conductor/action_mailbox/inbound_emails/index
+               layouts/rails/conductor):
+  
+app/controllers/add_diary_controller.rb:39:in `create_diary'
+Started GET "/" for 127.0.0.1 at 2024-03-24 17:26:25 +0700
+Processing by Rails::WelcomeController#index as HTML
+  Rendering /Users/leonardhorsitanggang/.rbenv/versions/3.0.2/lib/ruby/gems/3.0.0/gems/railties-7.0.6/lib/rails/templates/rails/welcome/index.html.erb
+  Rendered /Users/leonardhorsitanggang/.rbenv/versions/3.0.2/lib/ruby/gems/3.0.0/gems/railties-7.0.6/lib/rails/templates/rails/welcome/index.html.erb (Duration: 1.5ms | Allocations: 487)
+Completed 200 OK in 6ms (Views: 3.0ms | ActiveRecord: 0.0ms | Allocations: 1424)
+
+
+Started GET "/" for 127.0.0.1 at 2024-03-24 17:27:56 +0700
+Processing by Rails::WelcomeController#index as HTML
+  Rendering /Users/leonardhorsitanggang/.rbenv/versions/3.0.2/lib/ruby/gems/3.0.0/gems/railties-7.0.6/lib/rails/templates/rails/welcome/index.html.erb
+  Rendered /Users/leonardhorsitanggang/.rbenv/versions/3.0.2/lib/ruby/gems/3.0.0/gems/railties-7.0.6/lib/rails/templates/rails/welcome/index.html.erb (Duration: 2.4ms | Allocations: 488)
+Completed 200 OK in 6ms (Views: 4.3ms | ActiveRecord: 0.0ms | Allocations: 1542)
+
+
+Started GET "/add" for 127.0.0.1 at 2024-03-24 17:27:58 +0700
+Processing by AddDiaryController#index as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering add_diary/index.html.erb within layouts/application
+  Rendered add_diary/index.html.erb within layouts/application (Duration: 6.2ms | Allocations: 4910)
+  Rendered layout layouts/application.html.erb (Duration: 9.2ms | Allocations: 7731)
+Completed 200 OK in 14ms (Views: 12.4ms | ActiveRecord: 0.0ms | Allocations: 8907)
+
+
+Started GET "/add" for 127.0.0.1 at 2024-03-24 17:28:03 +0700
+Processing by AddDiaryController#index as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering add_diary/index.html.erb within layouts/application
+  Rendered add_diary/index.html.erb within layouts/application (Duration: 4.1ms | Allocations: 4918)
+  Rendered layout layouts/application.html.erb (Duration: 7.9ms | Allocations: 7724)
+Completed 200 OK in 13ms (Views: 11.7ms | ActiveRecord: 0.0ms | Allocations: 8948)
+
+
+Started GET "/add" for 127.0.0.1 at 2024-03-24 17:32:10 +0700
+Processing by AddDiaryController#index as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering add_diary/index.html.erb within layouts/application
+  Rendered add_diary/index.html.erb within layouts/application (Duration: 4.1ms | Allocations: 4983)
+  Rendered layout layouts/application.html.erb (Duration: 10.5ms | Allocations: 7789)
+Completed 200 OK in 14ms (Views: 12.7ms | Allocations: 9003)
+
+
+Started POST "/add" for 127.0.0.1 at 2024-03-24 17:32:16 +0700
+Processing by AddDiaryController#create_diary as TURBO_STREAM
+  Parameters: {"authenticity_token"=>"[FILTERED]", "diary_title"=>"asdas", "diary_desc"=>"<p>dasdasd</p>", "diary_date"=>"2024-03-24", "diary_mood"=>"6", "diary_tired"=>"6", "commit"=>"Post Diary"}
+  [1m[36mDiary Load (0.1ms)[0m  [1m[34mSELECT "diaries".* FROM "diaries" WHERE "diaries"."diary_date" = ?[0m  [["diary_date", "2024-03-24"]]
+  ↳ app/controllers/add_diary_controller.rb:17:in `create_diary'
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/add_diary_controller.rb:23:in `create_diary'
+  [1m[36mDiary Create (1.2ms)[0m  [1m[32mINSERT INTO "diaries" ("diary_title", "diary_desc", "diary_date", "diary_mood", "diary_tired", "created_by", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?)[0m  [["diary_title", "Asdas"], ["diary_desc", "<p>dasdasd</p>"], ["diary_date", "2024-03-24"], ["diary_mood", 6], ["diary_tired", 6], ["created_by", "1"], ["created_at", "2024-03-24 10:32:16.487982"], ["updated_at", "2024-03-24 10:32:16.487982"]]
+  ↳ app/controllers/add_diary_controller.rb:23:in `create_diary'
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/add_diary_controller.rb:23:in `create_diary'
+Redirected to http://127.0.0.1:3000/
+Completed 302 Found in 7ms (ActiveRecord: 1.9ms | Allocations: 4110)
+
+
+Started GET "/" for 127.0.0.1 at 2024-03-24 17:32:16 +0700
+Processing by Rails::WelcomeController#index as TURBO_STREAM
+  Rendering /Users/leonardhorsitanggang/.rbenv/versions/3.0.2/lib/ruby/gems/3.0.0/gems/railties-7.0.6/lib/rails/templates/rails/welcome/index.html.erb
+  Rendered /Users/leonardhorsitanggang/.rbenv/versions/3.0.2/lib/ruby/gems/3.0.0/gems/railties-7.0.6/lib/rails/templates/rails/welcome/index.html.erb (Duration: 0.8ms | Allocations: 487)
+Completed 200 OK in 2ms (Views: 1.5ms | ActiveRecord: 0.0ms | Allocations: 1498)
+
+
+Started GET "/" for 127.0.0.1 at 2024-03-24 17:32:16 +0700
+Processing by Rails::WelcomeController#index as HTML
+  Rendering /Users/leonardhorsitanggang/.rbenv/versions/3.0.2/lib/ruby/gems/3.0.0/gems/railties-7.0.6/lib/rails/templates/rails/welcome/index.html.erb
+  Rendered /Users/leonardhorsitanggang/.rbenv/versions/3.0.2/lib/ruby/gems/3.0.0/gems/railties-7.0.6/lib/rails/templates/rails/welcome/index.html.erb (Duration: 0.1ms | Allocations: 15)
+Completed 200 OK in 1ms (Views: 0.3ms | ActiveRecord: 0.0ms | Allocations: 300)
+
+
+  [1m[36mDiary Count (0.6ms)[0m  [1m[34mSELECT COUNT(*) FROM "diaries"[0m
+  [1m[36mDiary Load (0.3ms)[0m  [1m[34mSELECT "diaries".* FROM "diaries"[0m

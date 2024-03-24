@@ -5,56 +5,69 @@
     }
 </style>
 
-<label>Diary Title</label>
-<input class="form-control mb-2" type="text" name="diary_title" id="diary_title" required/>
+<%= form_with model: @diary do |form| %>
+    <label>Diary Title</label>
+    <%= form.text_field :diary_title, class: 'form-control mb-2' %>
 
-<label>Description</label>
-<div id="rich_box"></div>
-<input name="diary_desc" id="diary_desc" hidden>
+    <label>Description</label>
+    <div id="rich_box"></div>
+    <%= form.text_field :diary_desc, id: 'diary_desc', hidden: true %>
 
-<label>Date</label>
-<input class="form-control mb-2" type="date" name="diary_title" id="diary_date" required/>
-
-<div class="row mb-2">
-    <div class="col-lg-6 col-md-6 col-sm-12">
-        <label>How happy your mood this day?</label><br>
-        <input type="range" id="diary_mood" name="vol" min="1" max="10"><br>
-        <a>Min (1) and Max (10)</a>
+    <div class="form-group">
+        <%= form.label :diary_date, "Date" %>
+        <%= form.date_field :diary_date, class: "form-control mb-2", id: "diary_date", required: true %>
     </div>
-    <div class="col-lg-6 col-md-6 col-sm-12">
-        <label>How tired your body this day?</label><br>
-        <input type="range" id="diary_tireness" name="vol" min="1" max="10"><br>
-        <a>Min (1) and Max (10)</a>
-    </div>
-</div>
 
-<button class="btn btn-success w-100 py-3 my-3"><i class="fa-solid fa-address-book mx-2"></i> Post Diary</button>
+    <div class="row mb-2">
+        <div class="col-lg-6 col-md-6 col-sm-12">
+            <%= form.label :diary_mood, "How happy your mood this day?" %><br>
+            <%= form.range_field :diary_mood, min: 1, max: 10 %><br>
+            <span>Min (1) and Max (10)</span>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-12">
+            <%= form.label :diary_tired, "How tired your body this day?" %><br>
+            <%= form.range_field :diary_tired, min: 1, max: 10 %><br>
+            <span>Min (1) and Max (10)</span>
+        </div>
+    </div>
+    <%= form.submit "Post Diary", onclick:"getRichText()", class: "btn btn-success w-100 py-3 my-3" %>
+<% end %>
 
 <script>
-    var desc = document.getElementById("diary_desc");
+    let desc = document.getElementById("diary_desc")
 
     function deleteAfterCharacter(str, character) {
-        var index = str.indexOf(character);
+        let index = str.indexOf(character)
         if (index !== -1) {
-            return str.slice(0, index);
+            return str.slice(0, index)
         } else {
-            return str;
+            return str
         }
     }
 
+    function splitOutRichTag(text){
+        var res = text.replace('<div class="ql-editor" data-gramm="false" contenteditable="true">','')
+            .replace('<div class="ql-editor ql-blank" data-gramm="false" contenteditable="true">','')
+            .replace('<div class="ql-editor" data-gramm="false" contenteditable="true" data-dl-input-translation="true">','')
+            .replace('<div class="ql-editor ql-blank" data-gramm="false" contenteditable="true" data-dl-input-translation="true">','')
+            .replace('</div><div class="ql-clipboard" contenteditable="true" tabindex="-1"></div><div class="ql-tooltip ql-hidden"><a class="ql-preview" target="_blank" href="about:blank"></a><input type="text" data-formula="e=mc^2" data-link="https://quilljs.com" data-video="Embed URL"><a class="ql-action"></a><a class="ql-remove"></a></div>','')
+            .replace('<deepl-inline-translate style="z-index: 1999999999;"></deepl-inline-translate>','')
+        return res
+    }
+
     function getRichText(){
-        var rawText = document.getElementById("rich_box").innerHTML;
-        var cleanText = splitOutRichTag(rawText);
-        var characterToDeleteAfter = "</div>";
-        var modifiedString = deleteAfterCharacter(cleanText, characterToDeleteAfter);
-        desc.value = modifiedString;
+        let rawText = document.getElementById("rich_box").innerHTML
+        let cleanText = splitOutRichTag(rawText)
+        let characterToDeleteAfter = "</div>"
+        let modifiedString = deleteAfterCharacter(cleanText, characterToDeleteAfter)
+        desc.value = modifiedString
     }
 </script>
 
 <!-- Main Quill library -->
 <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
 <script>
-    var quill = new Quill('#rich_box', {
+    let quill = new Quill('#rich_box', {
         theme: 'snow'
     });
 </script>

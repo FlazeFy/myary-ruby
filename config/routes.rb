@@ -5,5 +5,7 @@ Rails.application.routes.draw do
   # root "articles#index"
   scope "/add", controller: "add_diary" do
     get "/", action: "index", as: "add_diary"
+
+    post "/", action: "create_diary"
   end 
 end
