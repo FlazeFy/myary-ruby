@@ -1,11 +1,17 @@
 Rails.application.routes.draw do
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-
-  # Defines the root path route ("/")
-  # root "articles#index"
+  # MVC
   scope "/add", controller: "add_diary" do
     get "/", action: "index", as: "add_diary"
 
     post "/", action: "create_diary"
+  end 
+
+  scope "/", controller: "book" do
+    get "/", action: "index", as: "book"
+  end 
+
+  # RestAPI
+  scope "api/v1/diary", controller: "api/diary" do
+    get "/by_date/:date", action: "get_diary_by_date"
   end 
 end

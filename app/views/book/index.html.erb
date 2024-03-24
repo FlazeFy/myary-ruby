@@ -1,0 +1,83 @@
+<style>
+    .btn-day-row {
+        padding: var(--spaceMD);
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+        border-radius: var(--roundedLG);
+        border: transparent;
+        background: var(--whiteColor);
+        margin-right: var(--spaceMD);
+    }
+    .btn-day-row:hover {
+        background: var(--primaryColor);
+        color: var(--whiteColor) !important;
+        box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    }
+</style>
+
+<h3 class="m-0">Today</h3>
+<h4><%= Time.now.strftime("%A, %d %B %Y") %></h4>
+
+<div class="d-inline-block my-3">
+    <% require 'date' %>
+
+    <% today = Date.today - 1 %>
+
+    <% (0..7).each do |i| %>
+        <% date = today + i %>
+        <button class="btn-day-row" onclick="get_diary_by_date(`<%= date.strftime('%Y-%m-%d') %>`)">
+            <h2><%= date.strftime("%d") %></h2>
+            <%= date.strftime("%B") %>
+        </button>
+    <% end %>
+</div><hr>
+
+<h3>Diary : <span id="diary_title">-</span></h3>
+
+<span id="diary_desc">-</span>
+
+<p class="mb-0">Level of mood        : <span id="diary_mood">-</span>/10</p>
+<p>Level of tireness    : <span id="diary_tired">-</span>/10</p>
+
+<script>    
+    const get_diary_by_date = (date) => {
+        // Element Attribute
+        let el_diary_title = document.getElementById('diary_title')
+        let el_diary_desc = document.getElementById('diary_desc')
+        let el_diary_mood = document.getElementById('diary_mood')
+        let el_diary_tired = document.getElementById('diary_tired')
+
+        // Initial
+        el_diary_title.innerHTML = '-'
+        el_diary_desc.innerHTML = '-'
+        el_diary_mood.innerHTML = '-'
+        el_diary_tired.innerHTML = '-'
+
+        // Fetching
+        $.ajax({
+            url: `/api/v1/diary/by_date/${date}`,
+            datatype: "json",
+            type: "get",
+            beforeSend: function (xhr) {
+                // Auth
+            }
+        })
+        .done(function (response) {
+            let dt = response.data
+            el_diary_title.innerHTML = dt.diary_title
+            el_diary_desc.innerHTML = dt.diary_desc
+            el_diary_mood.innerHTML = dt.diary_mood
+            el_diary_tired.innerHTML = dt.diary_tired
+        })
+        .fail(function (jqXHR, ajaxOptions, thrownError) {
+            if (jqXHR.status == 404) {
+                $('#tmp-modal').modal('show')
+                $('#tmp-modal-title').text('Error')
+                $('#tmp-modal-body').html(`<p>Dairy not found at date ${date}</p>`)
+            } else {
+                // handle other errors
+            }
+        });
+    }
+
+    get_diary_by_date('<%= Date.today.strftime('%Y-%m-%d') %>`')
+</script>
