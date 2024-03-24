@@ -3,4 +3,7 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "articles#index"
+  scope "/add", controller: "add_diary" do
+    get "/", action: "index", as: "add_diary"
+  end 
 end

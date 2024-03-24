@@ -13,3 +13,101 @@
  *= require_tree .
  *= require_self
  */
+ 
+ :root {   
+    /* Typography */
+    --textXJumbo : 24px;
+    --textJumbo : 20px;
+    --textXLG : 18px;
+    --textLG : 16px;
+    --textXMD : 14px;
+    --textMD : 13px;
+    --textSM : 12px;
+    --textXSM : 11px;
+
+    /* Rounded */
+    --roundedCircle : 100%;
+    --roundedJumbo : 30px;
+    --roundedXLG : 20px;
+    --roundedLG : 18px;
+    --roundedMD : 14px;
+    --roundedSM : 10px;
+    --roundedMini : 6px;
+
+    /* Spacing */
+    --spaceJumbo : 35px;
+    --spaceXLG : 24px;
+    --spaceLG : 20px;
+    --spaceXMD : 16px;
+    --spaceMD : 12px;
+    --spaceSM : 10px;
+    --spaceXSM : 8px;
+    --spaceXXSM : 6px;
+    --spaceMini : 4px;
+
+    /* Table column min width */
+    --tcolMinXSM : 60px;
+    --tcolMinSM : 120px;
+    --tcolMinMD : 140px;
+    --tcolMinLG : 180px;
+    --tcolMinJumbo : 240px;
+    --tcolMinHuge : 360px;
+
+    /* Color Pallete */
+    --successColor : #00DBAD;
+    --warningColor : #F85D59;
+    --infoBG : #00A4DE;
+
+    --primaryColor : #0081CF;
+    --darkColor : #3E4756;
+    --whiteColor : #FFFFFF;
+    --greyColor : #A1ACBD;
+}
+
+.content {
+    margin-inline: auto;
+    width: 720px;
+    display: block;
+}
+
+label {
+    font-weight: 500;
+    margin-bottom: var(--spaceSM);
+}
+
+a {
+    font-size: var(--textXMD);
+}
+
+.navbar-button-normal, .navbar-button-danger {
+    font-size: calc(var(--textXJumbo) * 1.25);
+    padding: var(--spaceMD) var(--spaceXMD);
+    border-radius: 100%;
+    margin-right: var(--spaceMD);
+    cursor: pointer;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    -webkit-transition: all 0.4s;
+    -o-transition: all 0.4s;
+    transition: all 0.4s;
+}
+
+.navbar-button-danger {
+    color: var(--warningColor);
+}
+
+.navbar-button-normal {
+    color: var(--primaryColor);
+}
+
+.navbar-button-normal:hover {
+    background: var(--primaryColor) !important;
+}
+
+.navbar-button-danger:hover {
+    background: var(--warningColor) !important;
+}
+
+.navbar-button-normal:hover, .navbar-button-danger:hover {
+    color: var(--whiteColor) !important;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
