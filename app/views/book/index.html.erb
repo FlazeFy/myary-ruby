@@ -70,9 +70,9 @@
         })
         .fail(function (jqXHR, ajaxOptions, thrownError) {
             if (jqXHR.status == 404) {
-                $('#tmp-modal').modal('show')
-                $('#tmp-modal-title').text('Error')
-                $('#tmp-modal-body').html(`<p>Dairy not found at date ${date}</p>`)
+                $('#tmp-modal-failed').modal('show')
+                $('#tmp-modal-title-failed').text('Not Found')
+                $('#tmp-modal-body-failed').html(`<p>Diary not found at date ${date}</p>`)
             } else {
                 // handle other errors
             }

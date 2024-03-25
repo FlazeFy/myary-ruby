@@ -15,7 +15,7 @@
 
     <div class="form-group">
         <%= form.label :diary_date, "Date" %>
-        <%= form.date_field :diary_date, class: "form-control mb-2", id: "diary_date", required: true %>
+        <%= form.date_field :diary_date, class: "form-control mb-2", id: "diary_date", required: true, onchange: 'check_availableness(this.value)' %>
     </div>
 
     <div class="row mb-2">
@@ -30,7 +30,7 @@
             <span>Min (1) and Max (10)</span>
         </div>
     </div>
-    <%= form.submit "Post Diary", onclick:"getRichText()", class: "btn btn-success w-100 py-3 my-3" %>
+    <%= form.submit "Post Diary", onclick:"getRichText()", id:"submit_diary", class: "btn btn-success w-100 py-3 my-3" %>
 <% end %>
 
 <script>
@@ -61,6 +61,36 @@
         let characterToDeleteAfter = "</div>"
         let modifiedString = deleteAfterCharacter(cleanText, characterToDeleteAfter)
         desc.value = modifiedString
+    }
+
+    const check_availableness = (val) => {
+        // Element Attribute
+        let el_submit_diary = document.getElementById('submit_diary')
+
+        $.ajax({
+            url: `/api/v1/diary/by_date/${val}`,
+            datatype: "json",
+            type: "get",
+            beforeSend: function (xhr) {
+                // Auth
+            }
+        })
+        .done(function (response) {
+            el_submit_diary.disabled = true
+            $('#tmp-modal-failed').modal('show')
+            $('#tmp-modal-title-failed').text('Error')
+            $('#tmp-modal-body-failed').html(`<p>There is already in this date</p>`)
+        })
+        .fail(function (jqXHR, ajaxOptions, thrownError) {
+            if (jqXHR.status == 404) {
+                el_submit_diary.disabled = false
+                $('#tmp-modal-success').modal('show')
+                $('#tmp-modal-title-success').text('Success')
+                $('#tmp-modal-body-success').html(`<p>This date is free! You can add a diary</p>`)
+            } else {
+                // handle other errors
+            }
+        });
     }
 </script>
 

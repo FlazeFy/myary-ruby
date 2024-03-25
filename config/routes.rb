@@ -10,6 +10,10 @@ Rails.application.routes.draw do
     get "/", action: "index", as: "book"
   end 
 
+  scope "/calendar", controller: "calendar" do
+    get "/", action: "index", as: "calendar"
+  end 
+
   # RestAPI
   scope "api/v1/diary", controller: "api/diary" do
     get "/by_date/:date", action: "get_diary_by_date"
