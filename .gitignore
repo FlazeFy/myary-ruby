@@ -24,3 +24,4 @@
 .idea/
 .vscode/
 app/assets/images/
+config/environments/

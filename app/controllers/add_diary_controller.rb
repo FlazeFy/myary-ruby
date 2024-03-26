@@ -20,6 +20,7 @@ class AddDiaryController < ApplicationController
 
     # Create
     if @found == false 
+
       @data = Diary.create(
         diary_title: @diary_title, 
         diary_desc: params[:diary_desc],
@@ -28,6 +29,8 @@ class AddDiaryController < ApplicationController
         diary_tired: params[:diary_tired], 
         created_by: '1', #for now
       )
+
+      NotifierMailer.with(diary: @data).diary_email.deliver_now
     else 
       render :new, status: :unprocessable_entity
     end

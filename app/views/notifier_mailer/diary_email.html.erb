@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+    </head>
+    <body>
+        <h2><b>Hello from Myary,</b></h2>
+        <p>
+            You have successfully created diary<br>
+        </p>
+        <p>Have a nice day!</p>
+        <hr>
+        <h2><%= @diary.diary_title %></h2>
+        <br>
+        <div><%= Nokogiri::HTML.fragment(@diary.diary_desc) %></div>
+    </body>
+</html>

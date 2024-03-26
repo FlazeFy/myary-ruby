@@ -16,4 +16,23 @@ class Api::DiaryController < ApplicationController
       }, status: :not_found
     end
   end
+
+  def delete_diary_by_id
+    @res = Diary.find_by(id: params[:id])
+
+    if @res
+      @res.destroy
+      render json: { 
+        status: "success", 
+        message: "Diary deleted", 
+        data: @data 
+      }, status: :ok
+    else
+      render json: { 
+        status: "error", 
+        message: "Diary failed to delete", 
+        data: nil
+      }, status: :not_found
+    end
+  end
 end

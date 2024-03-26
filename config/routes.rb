@@ -17,5 +17,6 @@ Rails.application.routes.draw do
   # RestAPI
   scope "api/v1/diary", controller: "api/diary" do
     get "/by_date/:date", action: "get_diary_by_date"
+    delete "/by_id/:id", action: "delete_diary_by_id"
   end 
 end

@@ -31,7 +31,12 @@
     <% end %>
 </div><hr>
 
-<h3>Diary : <span id="diary_title">-</span></h3>
+<div class="d-flex justify-content-between">
+    <div>
+        <h3>Diary : <span id="diary_title">-</span></h3>
+    </div>
+    <div id="btn-delete-holder"></div>
+</div>
 
 <span id="diary_desc">-</span>
 
@@ -45,12 +50,14 @@
         let el_diary_desc = document.getElementById('diary_desc')
         let el_diary_mood = document.getElementById('diary_mood')
         let el_diary_tired = document.getElementById('diary_tired')
+        let el_diary_del_btn_holder = document.getElementById('btn-delete-holder')
 
         // Initial
         el_diary_title.innerHTML = '-'
         el_diary_desc.innerHTML = '-'
         el_diary_mood.innerHTML = '-'
         el_diary_tired.innerHTML = '-'
+        el_diary_del_btn_holder.innerHTML = ''
 
         // Fetching
         $.ajax({
@@ -67,6 +74,25 @@
             el_diary_desc.innerHTML = dt.diary_desc
             el_diary_mood.innerHTML = dt.diary_mood
             el_diary_tired.innerHTML = dt.diary_tired
+            el_diary_del_btn_holder.innerHTML = `
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteDiary"><i class="fa-solid fa-fire"></i></button>
+
+                <div class="modal fade" id="deleteDiary" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header bg-danger">
+                                <h5 class="modal-title text-white" id="exampleModalLabel">Warning</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Are you sure want to delete this diary?</p>
+                                <button class="btn btn-danger" onclick="delete_diary_by_id(${dt.id})">Yes, Delete</button>
+                                <span id="err-msg-delete"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `
         })
         .fail(function (jqXHR, ajaxOptions, thrownError) {
             if (jqXHR.status == 404) {
@@ -75,6 +101,25 @@
                 $('#tmp-modal-body-failed').html(`<p>Diary not found at date ${date}</p>`)
             } else {
                 // handle other errors
+            }
+        });
+    }
+
+    const delete_diary_by_id = (id) => {
+        $.ajax({
+            url: `/api/v1/diary/by_id/${id}`,
+            type: 'DELETE',
+            data: null,
+            dataType: 'json',
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));
+            },
+            success: function(response) {
+                $('#tmp-modal-success').modal({ backdrop: 'static' }).modal('hide')
+                get_diary_by_date('<%= Date.today.strftime('%Y-%m-%d') %>`')
+            },
+            error: function(response, jqXHR, textStatus, errorThrown) {
+                $("#err-msg-delete").text('Something wrong')
             }
         });
     }

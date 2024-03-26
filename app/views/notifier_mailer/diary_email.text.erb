@@ -1,0 +1,9 @@
+Hello from Myary,
+===============================================
+
+You have successfully created diary
+Have a nice day!
+
+<%= @diary.diary_title %>
+
+<%= Nokogiri::HTML.fragment(@diary.diary_desc).text %>
